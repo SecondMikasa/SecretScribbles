@@ -10,9 +10,9 @@ export const POST = async (request: Request) => {
     try {
         // remember to put await
         const reqBody = await request.json()
-        const { username, email, password } = reqBody()
+        const { username, email, password } = reqBody
 
-        const verifyToken = Math.floor(100000 + Math.random() * 900000).toString()
+        const verifyCode = Math.floor(100000 + Math.random() * 900000).toString()
 
         const existingUserVerifiedByUsername = await UserModel.findOne({ username, isVerified: true })
 
@@ -24,7 +24,7 @@ export const POST = async (request: Request) => {
                 status: 400
             })
         }
-
+        
         const existingUserByEmail = await UserModel.findOne({ email })
 
         if (existingUserByEmail) {
@@ -38,8 +38,8 @@ export const POST = async (request: Request) => {
             else {
                 const hashedPassword = await bcrypt.hash(password, 10)
                 existingUserByEmail.password = hashedPassword
-                existingUserByEmail.verifyToken = verifyToken
-                existingUserByEmail.verifyTokenExpiry = new Date(Date.now() + 3600000)
+                existingUserByEmail.verifyCode = verifyCode
+                existingUserByEmail.verifyCodeExpiry = new Date(Date.now() + 3600000)
 
                 await existingUserByEmail.save()
             }
@@ -55,8 +55,8 @@ export const POST = async (request: Request) => {
                 username: username,
                 email: email,
                 password: hashedPassword,
-                verifyToken: verifyToken,
-                verifyTokenExpiry: expiryDate,
+                verifyCode: verifyCode,
+                verifyCodeExpiry: expiryDate,
                 isVerified: false,
                 isAcceptingMessage: true,
                 messages: []
@@ -68,7 +68,7 @@ export const POST = async (request: Request) => {
 
         //TODO:Send Verification Email
 
-        const emailResponse: any = await sendVerificationEmail(email, username, verifyToken)
+        const emailResponse: any = await sendVerificationEmail(email, username, verifyCode)
         // console.log("emailResponse :", emailResponse)
 
         if (!emailResponse) {
