@@ -28,7 +28,7 @@ export async function POST(request: Request) {
         //By default, findOneAndUpdate() returns the document as it was before update was applied. If you set new: true, findOneAndUpdate() will instead give you the object after update was applied.
 
         const updatedUser = await UserModel.findByIdAndUpdate(userId,
-            { isAcceptingMessage: acceptMessages },
+            { isAcceptingMessages: acceptMessages },
             { new: true }
         )
 
@@ -93,13 +93,13 @@ export async function GET(request: Request) {
     
         return Response.json({
             success: true,
-            isAcceptingMessages: requiredUser.isAcceptingMessage
+            isAcceptingMessages: requiredUser.isAcceptingMessages
         }, {
             status: 200
         })
     }
     catch (error) {
-        console.log("Failed to update user status to accept messages")
+        console.log("Failed to fetch user status to accept messages")
 
         return Response.json({
             success: false,

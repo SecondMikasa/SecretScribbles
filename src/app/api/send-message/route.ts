@@ -21,7 +21,7 @@ export async function POST(request: Request) {
         }
 
         //TODO: Is user accepting messages
-        const isAcceptingMessages = requiredUser.isAcceptingMessage
+        const isAcceptingMessages = requiredUser.isAcceptingMessages
 
         if (!isAcceptingMessages) {
             return Response.json({

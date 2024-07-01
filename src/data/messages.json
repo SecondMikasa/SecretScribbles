@@ -1,0 +1,87 @@
+[
+    {
+      "title": "Message from User123",
+      "content": "Hey, how are you doing today?",
+      "received": "10 minutes ago"
+    },
+    {
+      "title": "Message from SecretAdmirer",
+      "content": "I really liked your recent post!",
+      "received": "2 hours ago"
+    },
+    {
+      "title": "Message from MysteryGuest",
+      "content": "Do you have any book recommendations?",
+      "received": "1 day ago"
+    },
+    {
+        "title": "Message from JohnDoe",
+        "content": "Your latest blog post was very insightful!",
+        "received": "15 minutes ago"
+      },
+      {
+        "title": "Message from BookLover123",
+        "content": "Can you recommend any good thrillers?",
+        "received": "3 hours ago"
+      },
+      {
+        "title": "Message from TechGuru",
+        "content": "Loved your article on AI advancements!",
+        "received": "5 hours ago"
+      },
+      {
+        "title": "Message from FoodieFan",
+        "content": "The recipes you shared are amazing!",
+        "received": "12 hours ago"
+      },
+      {
+        "title": "Message from NatureEnthusiast",
+        "content": "Do you have any tips for hiking beginners?",
+        "received": "1 day ago"
+      },
+      {
+        "title": "Message from MovieBuff",
+        "content": "Any suggestions for classic movies to watch?",
+        "received": "3 days ago"
+      },
+      {
+        "title": "Message from GamerGirl",
+        "content": "Loved your review on the latest game release!",
+        "received": "4 days ago"
+      },
+      {
+        "title": "Message from FitnessFreak",
+        "content": "Great tips on staying fit during the holidays!",
+        "received": "5 days ago"
+      },
+      {
+        "title": "Message from MusicManiac",
+        "content": "Can you create a playlist for workout sessions?",
+        "received": "6 days ago"
+      },
+      {
+        "title": "Message from HistoryBuff",
+        "content": "Your article on ancient civilizations was fascinating!",
+        "received": "1 week ago"
+      },
+      {
+        "title": "Message from CodeMaster",
+        "content": "Any recommendations for learning Python?",
+        "received": "1 week ago"
+      },
+      {
+        "title": "Message from ArtLover",
+        "content": "Your paintings are truly inspiring!",
+        "received": "1 week ago"
+      },
+      {
+        "title": "Message from ScienceGeek",
+        "content": "Loved your explanation of quantum physics!",
+        "received": "1 week ago"
+      },
+      {
+        "title": "Message from PetParent",
+        "content": "Any advice on training a new puppy?",
+        "received": "2 weeks ago"
+      }
+  ]
