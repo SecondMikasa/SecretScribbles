@@ -129,7 +129,7 @@ const page = () => {
                     </>
                   ) :
                   (
-                    'Signup'
+                    'Signin'
                   )
                 }
               </Button>
