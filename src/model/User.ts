@@ -1,9 +1,6 @@
-import mongoose, { Schema, Document, model } from 'mongoose'
-
-export interface Message extends Document{
-    content: string,
-    createdAt: Date
-}
+import { Message, User } from '@/types/interfaces'
+import mongoose, { Schema, model } from 'mongoose'
+import { number } from 'zod'
 
 const MessageSchema: Schema<Message> = new Schema({
     content: {
@@ -16,17 +13,6 @@ const MessageSchema: Schema<Message> = new Schema({
         default: Date.now()
     }
 })
-
-export interface User extends Document{
-    username: String,
-    email: String,
-    password: String,
-    verifyCode: String,
-    verifyCodeExpiry: Date,
-    isVerified: boolean,
-    isAcceptingMessages: boolean,
-    messages: Message[]
-}
 
 const UserSchema: Schema<User> = new Schema({
     username: {
@@ -46,7 +32,7 @@ const UserSchema: Schema<User> = new Schema({
         required: [true, "Password is required"]
     },
     verifyCode: {
-        type: String,
+        type: Number,
         required: [true, "Verify token is required"]
     },
     verifyCodeExpiry: {
@@ -61,9 +47,15 @@ const UserSchema: Schema<User> = new Schema({
         type: Boolean,
         default: true
     },
+    // messages: [MessageSchema]
+    // But we have a custom datatype of message (singular) of messages
     messages: [MessageSchema]
 })
 
-const UserModel = mongoose.models.User as mongoose.Model<User> || mongoose.model<User>("User", UserSchema)
+// Fetch existing UserModel and if model doesn't exist, create a model in our MongoDB database through mongoose and then fetch it
+const UserModel =
+    (mongoose.models.User as mongoose.Model<User>) // Creating User model in DB and then fetching it
+    ||
+    mongoose.model<User>("User", UserSchema) // Fetching existing model
 
 export default UserModel

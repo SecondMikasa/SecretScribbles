@@ -1,7 +1,10 @@
-import type { NextAuthOptions } from "next-auth";
+import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
+
 import bcrypt from "bcryptjs";
+
 import dbConnect from "@/lib/dbConnect";
+
 import UserModel from "@/model/User";
 
 export const authOptions: NextAuthOptions = {
@@ -12,9 +15,20 @@ export const authOptions: NextAuthOptions = {
             name: "Credentials",
 
             credentials: {
-                email: { label: "Email", type: "text", placeholder: "Jsmith@gmail.com" },
+                email: {
+                    label: "Email",
+                    type: "text",
+                },
 
-                password: { label: "Password", type: "password", placeholder: "123456" }
+                username: {
+                    label: "Username",
+                    type: "text",
+                },
+
+                password: {
+                    label: "Password",
+                    type: "password",
+                }
             },
 
             async authorize(credentials: any): Promise<any> {
@@ -29,7 +43,7 @@ export const authOptions: NextAuthOptions = {
                     })
 
                     if (!user) {
-                        throw new Error('No user found with this email')
+                        throw new Error('No user found with this email or username')
                     }
 
                     if (!user.isVerified) {
@@ -43,15 +57,16 @@ export const authOptions: NextAuthOptions = {
                     } else {
                         throw new Error('Incorrect Password')
                     }
-                } catch (error) {
-                    throw new Error
+                }
+                catch (error: any) {
+                    throw new Error(error)
                 }
             }
         })
     ],
 
     callbacks: {
-        //TODO: JWT se mila user, user --> token --> session
+        //NOTE: JWT se mila user, user --> token --> session
         async jwt({ token, user }) {
             if (user) {
                 token._id = user._id,
@@ -65,7 +80,7 @@ export const authOptions: NextAuthOptions = {
 
         async session({ session, token }) {
             if (token) {
-                session.user._id = token._id
+                session.user._id = token._id?.toString()
                 session.user.isVerified = token.isVerified
                 session.user.isAcceptingMessages = token.isAcceptingMessages
                 session.user.username = token.username
@@ -80,6 +95,10 @@ export const authOptions: NextAuthOptions = {
 
     session: {
         strategy: "jwt"
+    },
+
+    theme: {
+        colorScheme: "dark",  
     },
 
     secret: process.env.NEXTAUTH_SECRET,
