@@ -14,12 +14,11 @@ export const POST = async (request: Request, response: Response) => {
         const verifyCode = Math.floor(100000 + Math.random() * 900000)
 
         // [x]: Checks for unqiue username
-        const existingUserVerifiedByUsername = await UserModel.findOne({
+        const existingUserByUsername = await UserModel.findOne({
             username,
-            isVerified: true
         })
 
-        if (existingUserVerifiedByUsername) {
+        if (existingUserByUsername) {
             return Response.json({
                 success: false,
                 message: "Username is already taken"
@@ -73,7 +72,7 @@ export const POST = async (request: Request, response: Response) => {
         // [x]: Sending verification email
         const emailRespone = await sendVerificationEmail(
             email,
-            password,
+            username,
             verifyCode
         )
 

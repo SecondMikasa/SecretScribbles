@@ -1,17 +1,30 @@
 "use client"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
-import * as z from "zod"
-import Link from "next/link"
 import { useState } from "react"
-import { useToast } from "@/components/ui/use-toast"
+
+import { Loader2 } from "lucide-react"
+
+import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { Form, FormField, FormItem, FormControl, FormDescription, FormLabel, FormMessage } from "@/components/ui/form"
+
+import { signIn } from "next-auth/react"
+
+import * as z from "zod"
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+
+import { signInSchema } from "@/schemas/signInSchema"
+
+import { useToast } from "@/components/ui/use-toast"
+import {
+  Form,
+  FormField,
+  FormItem,
+  FormControl,
+  FormLabel,
+  FormMessage
+} from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { Loader2 } from "lucide-react"
-import { signInSchema } from "@/schemas/signInSchema"
-import { signIn } from "next-auth/react"
 
 const page = () => {
 
@@ -20,7 +33,6 @@ const page = () => {
   const { toast } = useToast()
   const router = useRouter()
 
-  // TODO: Implementation of Zod
   const form = useForm<z.infer<typeof signInSchema>>({
 
     //zodResolver cannot work on it's own. It needs a Schema to work
@@ -70,7 +82,6 @@ const page = () => {
 
   return (
     <>
-
       <div className="flex justify-center items-center min-h-screen bg-gray-100">
         <div className="w-full max-w-md p-8 space-y-8 bg-white rounded-lg shadow-md">
           <div className="text-center">

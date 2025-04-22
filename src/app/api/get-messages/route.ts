@@ -9,15 +9,24 @@ export async function GET(request: Request) {
     await dbConnect()
 
     const session = await getServerSession(authOptions)
-    const user: User = await session?.user
+    const user: User | undefined = session?.user as User | undefined
 
     if (!session || !session.user) {
         return Response.json({
-            success: true,
+            success: false,
             message: 'Not Authenticated'
         }, {
             status: 401
         })
+    }
+
+    if (!user) {
+        return Response.json({
+            success: false,
+            message: 'Unauthorized'
+        }, {
+            status: 401
+        });
     }
 
     //TODO:While using aggregation pipeline, we can't treat _id as a string

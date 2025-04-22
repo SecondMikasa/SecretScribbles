@@ -1,6 +1,9 @@
-import dbConnect from "@/lib/dbConnect";
-import UserModel from "@/model/User";
 import { z } from "zod";
+
+import dbConnect from "@/lib/dbConnect";
+
+import UserModel from "@/model/User";
+
 import { usernameValidation } from "@/schemas/signUpSchema";
 
 //Handle username issues on frontend only
@@ -10,12 +13,14 @@ const UsernameQuerySchema = z.object({
 
 export async function GET(request: Request) {
 
-    //TODO: Prevent wrong method --> Not required anymore in latest NextJS version
+    //FIXME: Prevent wrong method --> Not required anymore in latest NextJS version
     // if (request.method !== 'GET') {
     //     return Response.json({
     //         success: false,
     //         message: 'Method not allowed'
-    //     }, { status: 405 })
+    //     }, { 
+    //         status: 405 
+    //     })
     // }
 
     await dbConnect()
@@ -29,8 +34,7 @@ export async function GET(request: Request) {
 
         //Validation with Zod --> takes object
         const result = UsernameQuerySchema.safeParse(queryParams)
-        console.log("result: ", result)
-        //TODO: Remove console.log
+        // console.log("result: ", result)
 
         if (!result.success) {
             const usernameErrors = result.error.format().username?._errors || []
@@ -48,33 +52,38 @@ export async function GET(request: Request) {
 
         const { username } = result.data
 
-        const existingVerifiedUser = await UserModel.findOne({
+        const existingUserByUsername = await UserModel.findOne({
             username,
-            isVerified: true
         })
-        if (existingVerifiedUser) {
+        if (existingUserByUsername) {
             return Response.json({
                 success: false,
                 message: 'Username is already taken'
-            }, { status: 200 })
+            }, {
+                status: 200
+            })
         }
 
-        //Will be returned if username is not unique but the former ain't verified
+        //Will be returned if username is unique 
         return Response.json(
             {
                 success: true,
                 message: 'Username is unique'
             },
-            { status: 200 }
+            {
+                status: 200
+            }
         )
 
     } catch (error) {
         console.log("Error checking username", error)
-        
+
         return Response.json({
             success: false,
             message: "Error checking username"
         },
-            { status: 500 })
+            {
+                status: 500
+            })
     }
 }
