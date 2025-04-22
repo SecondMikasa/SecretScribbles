@@ -1,13 +1,20 @@
 "use client"
-import { useToast } from '@/components/ui/use-toast'
 import { useParams, useRouter } from 'next/navigation'
-import { zodResolver } from "@hookform/resolvers/zod"
+import axios, { AxiosError } from "axios"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
+import { zodResolver } from "@hookform/resolvers/zod"
 import { verifySchema } from '@/schemas/verifySchema'
-import axios, { AxiosError } from "axios"
 import { ApiResponse } from "@/types/ApiResponse"
-import { Form, FormField, FormItem, FormControl, FormDescription, FormLabel, FormMessage } from "@/components/ui/form"
+import {
+    Form,
+    FormField,
+    FormItem,
+    FormControl,
+    FormLabel,
+    FormMessage
+} from "@/components/ui/form"
+import { useToast } from '@/components/ui/use-toast'
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 
@@ -15,9 +22,7 @@ const page = () => {
     const router = useRouter()
     const param = useParams<{ username: string }>()
     const { toast } = useToast()
-
     const form = useForm<z.infer<typeof verifySchema>>({
-        //zodResolver cannot work on it's own. It needs a Schema to work
         resolver: zodResolver(verifySchema)
     })
 
@@ -27,22 +32,21 @@ const page = () => {
                 username: param.username,
                 code: data.code
             })
-
+            
             toast({
                 title: "Success",
                 description: res.data.message
             })
-
-            router.replace('sign-in')
-
+            
+            // Changed redirect from 'sign-in' to 'dashboard'
+            router.replace('/dashboard')
         } catch (error) {
-
-            console.log("Some error occured while signing you up")
+            console.error("Error verifying account:", error)
             let axiosError = error as AxiosError<ApiResponse>
             let errorMessage = axiosError.response?.data.message
-
+            
             toast({
-                title: "Signup failed",
+                title: "Verification failed",
                 description: errorMessage,
                 variant: "destructive"
             })
@@ -61,27 +65,39 @@ const page = () => {
                         </p>
                     </div>
                     <Form {...form}>
-                        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                        <form
+                            onSubmit={form.handleSubmit(onSubmit)}
+                            className="space-y-6"
+                        >
                             <FormField
                                 control={form.control}
                                 name="code"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Verification Code</FormLabel>
+                                        <FormLabel>
+                                            Verification Code
+                                        </FormLabel>
                                         <FormControl>
-                                            <Input {...field} />
+                                            <Input
+                                                {...field}
+                                                placeholder="Enter 6-digit code"
+                                            />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
                                 )}
                             />
-                            <Button type="submit">Submit</Button>
+                            <Button
+                                type="submit"
+                                className="w-full"
+                            >
+                                Verify Account
+                            </Button>
                         </form>
                     </Form>
                 </div>
             </div>
         </>
-
     )
 }
 

@@ -1,6 +1,5 @@
 import { Message, User } from '@/types/interfaces'
-import mongoose, { Schema, model } from 'mongoose'
-import { number } from 'zod'
+import mongoose, { Schema } from 'mongoose'
 
 const MessageSchema: Schema<Message> = new Schema({
     content: {
