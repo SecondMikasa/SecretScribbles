@@ -205,9 +205,9 @@ const Page = () => {
         <Button
           className="mt-4"
           variant="outline"
-          onClick={(e) => {
-            e.preventDefault();
-            fetchMessage(true);
+          onClick={(e: React.MouseEvent) => {
+            e.preventDefault()
+            fetchMessage(true)
           }}
         >
           {
