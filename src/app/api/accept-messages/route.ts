@@ -61,7 +61,7 @@ export async function POST(request: Request) {
             message: 'Message acceptance status updated successfully'
         },
             {
-                status: 400
+                status: 201
             })
 
     }
