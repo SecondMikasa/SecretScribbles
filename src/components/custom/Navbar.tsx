@@ -1,15 +1,25 @@
 "use client"
 import Link from 'next/link'
+import { usePathname } from 'next/navigation';
+
 import { useSession, signOut } from 'next-auth/react'
+
 import { User } from 'next-auth'
+
 import { Button } from '../ui/button'
 
 import { LogOut, LayoutDashboard } from 'lucide-react';
 
 const Navbar = () => {
     const { data: session } = useSession()
-    const user: User = session?.user
+    const user: User | undefined = session?.user as User | undefined
 
+    const currentURL = usePathname()
+    const pathname = currentURL.split('/')
+    const currentPath = pathname[1]
+
+    const isDashboard = currentPath === "dashboard"
+    
     return (
         <nav className="sticky top-0 z-50 bg-white dark:bg-gray-900 shadow-md">
             <div className="container mx-auto px-4 py-3">
@@ -26,15 +36,23 @@ const Navbar = () => {
                         {session ? (
                             <>
                                 <span className="hidden md:block font-medium text-gray-700 dark:text-gray-300">
-                                    Welcome, <span className="text-purple-600 dark:text-purple-400">{user.username}</span>
+                                    Welcome, <span className="text-purple-600 dark:text-purple-400">
+                                        {user!.username}
+                                    </span>
                                 </span>
                                 
-                                <Link href="/dashboard">
+                                {
+                                    !isDashboard && (
+                                        <Link href="/dashboard">
                                     <Button variant="outline" className="flex items-center gap-2 hover:bg-purple-50 dark:hover:bg-gray-800">
                                         <LayoutDashboard size={18} />
-                                        <span className="hidden md:inline">Dashboard</span>
+                                                <span className="hidden md:inline">
+                                                    Dashboard
+                                                </span>
                                     </Button>
                                 </Link>
+                                    )
+                                }
                                 
                                 <Button 
                                     onClick={() => signOut()} 
@@ -42,7 +60,9 @@ const Navbar = () => {
                                     className="flex items-center gap-2 hover:text-red-600 hover:bg-red-50 dark:hover:bg-gray-800"
                                 >
                                     <LogOut size={18} />
-                                    <span className="hidden md:inline">Logout</span>
+                                    <span className="hidden md:inline">
+                                        Logout
+                                    </span>
                                 </Button>
                             </>
                         ) : (

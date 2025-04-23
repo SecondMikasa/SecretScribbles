@@ -33,7 +33,7 @@ import Autoplay from "embla-carousel-autoplay"
 
 const LandingPage = () => {
   const { data: session } = useSession()
-  const user: User = session?.user
+  const user: User | undefined = session?.user as User | undefined
 
   return (
     <main className="flex-grow">
@@ -141,7 +141,9 @@ const LandingPage = () => {
               <div className="bg-purple-100 dark:bg-purple-900 p-3 rounded-full w-14 h-14 flex items-center justify-center mb-4">
                 <Lock className="text-purple-600 dark:text-purple-300" size={24} />
               </div>
-              <h3 className="text-xl font-bold mb-3 text-gray-900 dark:text-white">Complete Anonymity</h3>
+              <h3 className="text-xl font-bold mb-3 text-gray-900 dark:text-white">
+                Complete Anonymity
+              </h3>
               <p className="text-gray-600 dark:text-gray-300">
                 Your identity remains private, giving you the freedom to express yourself without constraints.
               </p>
@@ -149,9 +151,14 @@ const LandingPage = () => {
 
             <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
               <div className="bg-pink-100 dark:bg-pink-900 p-3 rounded-full w-14 h-14 flex items-center justify-center mb-4">
-                <MessageCircle className="text-pink-600 dark:text-pink-300" size={24} />
+                <MessageCircle
+                  className="text-pink-600 dark:text-pink-300"
+                  size={24}
+                />
               </div>
-              <h3 className="text-xl font-bold mb-3 text-gray-900 dark:text-white">Genuine Connections</h3>
+              <h3 className="text-xl font-bold mb-3 text-gray-900 dark:text-white">
+                Genuine Connections
+              </h3>
               <p className="text-gray-600 dark:text-gray-300">
                 Form meaningful relationships based on authentic conversations without judgement.
               </p>
@@ -161,7 +168,9 @@ const LandingPage = () => {
               <div className="bg-blue-100 dark:bg-blue-900 p-3 rounded-full w-14 h-14 flex items-center justify-center mb-4">
                 <Shield className="text-blue-600 dark:text-blue-300" size={24} />
               </div>
-              <h3 className="text-xl font-bold mb-3 text-gray-900 dark:text-white">Safe Environment</h3>
+              <h3 className="text-xl font-bold mb-3 text-gray-900 dark:text-white">
+                Safe Environment
+              </h3>
               <p className="text-gray-600 dark:text-gray-300">
                 We prioritize user safety with moderation tools and community guidelines.
               </p>
