@@ -100,7 +100,7 @@ const LandingPage = () => {
                           </CardHeader>
                           <CardContent className="flex aspect-square items-center justify-center p-6 text-gray-800 dark:text-gray-200">
                             <span className="text-lg font-medium italic">
-                              "{message.content}"
+                              &quot;{message.content}&quot;
                             </span>
                           </CardContent>
                           <CardFooter className="text-sm text-gray-500 dark:text-gray-400 flex justify-between">
@@ -211,7 +211,7 @@ const LandingPage = () => {
             <p
               className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto"
             >
-              Don't just take our word for it - hear from our community
+              Don&apos;t just take our word for it - hear from our community
             </p>
           </div>
 
@@ -225,7 +225,7 @@ const LandingPage = () => {
                   <p
                     className="italic text-gray-700 dark:text-gray-300 mb-4"
                   >
-                    "{testimonial.quote}"
+                    &quot;{testimonial.quote}&quot;
                   </p>
                   <p
                     className="font-medium text-purple-600 dark:text-purple-400"

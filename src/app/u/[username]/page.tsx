@@ -16,7 +16,7 @@ import axios, {AxiosError} from 'axios'
 import { toast } from '@/components/ui/use-toast'
 import { ApiResponse } from '@/types/ApiResponse'
 
-const page = () => {
+const Page = () => {
   const params = useParams<{username: string}>()
   const username = params.username
   const [isLoading, setIsLoading] = useState(false)
@@ -103,7 +103,7 @@ const page = () => {
                         </FormControl>
                         <FormMessage className="text-red-500" />
                         <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
-                          Your message will be completely anonymous. The recipient won't know who sent it.
+                          Your message will be completely anonymous. The recipient won&apos;t know who sent it.
                         </p>
                       </FormItem>
                     )}
@@ -150,4 +150,4 @@ const page = () => {
   )
 }
 
-export default page
+export default Page

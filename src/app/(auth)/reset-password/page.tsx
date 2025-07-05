@@ -204,7 +204,7 @@ const ResetPasswordPage = () => {
 
           <div className="text-center mt-6 text-gray-600">
             <p>
-              Didn't receive the code?{" "}
+              Didn&apos;t receive the code?{" "}
               <Link
                 href="/forgot-password"
                 className="text-indigo-600 hover:text-indigo-800 font-medium"

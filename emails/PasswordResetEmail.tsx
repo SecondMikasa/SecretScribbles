@@ -50,7 +50,7 @@ export default function PasswordResetEmail({ username, otp }: PasswordResetEmail
         </Row>
         <Row>
           <Text>
-            This code is valid for 15 minutes and can only be used once.
+            This code is valid for 1 hour and can only be used once.
           </Text>
         </Row>
         <Row>

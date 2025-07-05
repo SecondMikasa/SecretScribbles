@@ -18,12 +18,15 @@ import { useToast } from '@/components/ui/use-toast'
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 
-const page = () => {
+const Page = () => {
     const router = useRouter()
     const param = useParams<{ username: string }>()
     const { toast } = useToast()
     const form = useForm<z.infer<typeof verifySchema>>({
-        resolver: zodResolver(verifySchema)
+        resolver: zodResolver(verifySchema),
+        defaultValues: {
+            code: ''
+        }
     })
 
     const onSubmit = async (data: z.infer<typeof verifySchema>) => {
@@ -32,19 +35,19 @@ const page = () => {
                 username: param.username,
                 code: data.code
             })
-            
+
             toast({
                 title: "Success",
                 description: res.data.message
             })
-            
+
             // Changed redirect from 'sign-in' to 'dashboard'
             router.replace('/dashboard')
         } catch (error) {
             console.error("Error verifying account:", error)
             let axiosError = error as AxiosError<ApiResponse>
             let errorMessage = axiosError.response?.data.message
-            
+
             toast({
                 title: "Verification failed",
                 description: errorMessage,
@@ -101,4 +104,4 @@ const page = () => {
     )
 }
 
-export default page
+export default Page

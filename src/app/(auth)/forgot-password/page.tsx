@@ -65,7 +65,7 @@ const ForgotPasswordPage = () => {
         <div className="max-w-lg text-white">
           <h1 className="text-5xl font-bold mb-6">Forgot Password?</h1>
           <p className="text-xl mb-8">
-            Don't worry! We'll send you a verification code to reset your password.
+            Don&apos;t worry! We&apos;ll send you a verification code to reset your password.
           </p>
           <div className="space-y-6">
             <div className="flex items-center">
