@@ -49,32 +49,52 @@ const SignInPage = () => {
   const onSubmit = async (data: z.infer<typeof signInSchema>) => {
     setIsSubmitting(true)
 
-    const res = await signIn('credentials', {
-      redirect: false,
-      identifier: data.identifier,
-      password: data.password
-    })
+    try {
+      const res = await signIn('credentials', {
+        redirect: false,
+        identifier: data.identifier,
+        password: data.password
+      });
 
-    if (res?.error) {
-      if (res?.error == 'CredentialsSignin ') {
+      if (res?.error) {
+        console.error('Sign in error:', res.error)
+        
+        // Handle specific error messages
+        let errorMessage = "Sign in failed";
+        
+        if (res.error.includes('No user found')) {
+          errorMessage = "No account found with this username or email"
+        } else if (res.error.includes('verify your account')) {
+          errorMessage = "Please verify your account before signing in"
+        } else if (res.error.includes('Incorrect password')) {
+          errorMessage = "Incorrect password";
+        } else if (res.error.includes('identifier and password')) {
+          errorMessage = "Please provide both username/email and password"
+        } else {
+          errorMessage = "Invalid credentials. Please check your username/email and password."
+        }
+
         toast({
-          title: "Login failed",
-          description: res.error,
+          title: "Sign In Failed",
+          description: errorMessage,
           variant: "destructive"
-        })
-      }
-      else {
+        });
+      } else if (res?.ok) {
         toast({
-          title: "Login failed",
-          description: "Incorrect username or password",
-          variant: "destructive"
+          title: "Success",
+          description: "Signed in successfully!",
         })
+        router.replace('/dashboard')
       }
+    } catch (error) {
+      console.error('Unexpected error during sign in:', error)
+      toast({
+        title: "Error",
+        description: "An unexpected error occurred. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
       setIsSubmitting(false)
-    }
-    else if (res?.url) {
-      setIsSubmitting(false)
-      router.replace('/dashboard')
     }
   }
 

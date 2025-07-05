@@ -15,13 +15,8 @@ export const authOptions: NextAuthOptions = {
             name: "Credentials",
 
             credentials: {
-                email: {
-                    label: "Email",
-                    type: "text",
-                },
-
-                username: {
-                    label: "Username",
+                identifier: {
+                    label: "Username or Email",
                     type: "text",
                 },
 
@@ -35,6 +30,10 @@ export const authOptions: NextAuthOptions = {
                 await dbConnect()
 
                 try {
+                    if (!credentials?.identifier || !credentials?.password) {
+                        throw new Error('Please provide both identifier and password');
+                    }
+
                     const user = await UserModel.findOne({
                         $or: [
                             { email: credentials.identifier },

@@ -13,7 +13,7 @@ export async function GET(request: Request) {
 
     const session = await getServerSession(authOptions)
     const user: User | undefined = session?.user as User | undefined
-    
+
     if (!session || !session.user) {
         return Response.json({
             success: false,
@@ -22,7 +22,7 @@ export async function GET(request: Request) {
             status: 401
         })
     }
-    
+
     if (!user) {
         return Response.json({
             success: false,
@@ -31,28 +31,43 @@ export async function GET(request: Request) {
             status: 401
         })
     }
-    
+
     //NOTE: While using aggregation pipeline, we can't treat _id as a string
     const userId = new mongoose.Types.ObjectId(user._id)
-    
+
     try {
-        
+
         const userData = await UserModel.aggregate([
             { $match: { _id: userId } },
             { $unwind: '$messages' },
             { $sort: { 'messages.createdAt': -1 } },
             { $group: { _id: '$_id', messages: { $push: '$messages' } } }
         ])
-        
-        if (!userData || userData.length === 0) {
-            return Response.json({
-                success: false,
-                message: "User not found or has no messages"
-            }, {
-                status: 404 
-            })
+
+        if (!userData) {
+            return Response.json(
+                {
+                    success: false,
+                    message: "User not found"
+                },
+                {
+                    status: 404
+                }
+            )
         }
-        
+
+        if (userData.length === 0) {
+            return Response.json(
+                {
+                    success: false,
+                    message: "User has no messages"
+                },
+                {
+                    status: 200
+                }
+            )
+        }
+
         return Response.json({
             success: true,
             //We are unwinding, making every element of array into a full fledged object
