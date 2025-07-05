@@ -4,16 +4,17 @@ import UserModel from "@/model/User";
 import bcrypt from 'bcryptjs'
 
 import { sendVerificationEmail } from "@/helpers/sendVerificationEmail"
+import { NextRequest } from "next/server";
 
-export const POST = async (request: Request, response: Response) => {
+export async function POST(request: NextRequest) {
     await dbConnect()
 
     try {
         const { username, email, password } = await request.json()
 
         const verifyCode = Math.floor(100000 + Math.random() * 900000)
-
-        // [x]: Checks for unqiue username
+        
+        // [x]: Checks for unique username
         const existingUserByUsername = await UserModel.findOne({
             username,
         })
@@ -26,8 +27,8 @@ export const POST = async (request: Request, response: Response) => {
                 status: 400
             })
         }
-
-        // [x]: Checks for unqiue email
+        
+        // [x]: Checks for unique email
         const existingUserByEmail = await UserModel.findOne({ email })
 
         if (existingUserByEmail) {
@@ -68,18 +69,18 @@ export const POST = async (request: Request, response: Response) => {
 
             await newUser.save()
         }
-
+        
         // [x]: Sending verification email
-        const emailRespone = await sendVerificationEmail(
+        const emailResponse = await sendVerificationEmail(
             email,
             username,
             verifyCode
         )
 
-        if (!emailRespone.success) {
+        if (!emailResponse.success) {
             return Response.json({
                 success: false,
-                message: `Failed to send verification code, ${emailRespone.message}`
+                message: `Failed to send verification code, ${emailResponse.message}`
             }, {
                 status: 500
             })
@@ -98,7 +99,7 @@ export const POST = async (request: Request, response: Response) => {
         return Response.json(
             {
                 success: false,
-                message: "Error occured while registering user"
+                message: "Error occurred while registering user"
             },
             {
                 status: 500

@@ -3,13 +3,17 @@ import { authOptions } from "../../auth/[...nextauth]/options";
 import dbConnect from "@/lib/dbConnect";
 import UserModel from "@/model/User";
 import { User } from "next-auth";
+import { NextRequest } from "next/server";
 
 export async function DELETE(
-  request: Request,
-  { params }: { params: { messageId: string } }
+  request: NextRequest,
+  { params }: { params: Promise<{ messageId: string }> }
 ) {
   await dbConnect();
-  const messageId = params.messageId;
+  
+  // In Next.js 15, params is a Promise and must be awaited
+  const { messageId } = await params;
+  
   const session = await getServerSession(authOptions);
   const user: User | null = session?.user as User | null;
   
