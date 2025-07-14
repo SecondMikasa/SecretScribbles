@@ -1,19 +1,38 @@
 "use client"
+import { useState } from 'react'
+
+import Link from 'next/link'
+import { useParams } from 'next/navigation'
+
+import * as z from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod'
+
+import axios, { AxiosError } from 'axios'
+
+import { FormProvider, useForm } from 'react-hook-form'
+
+import { Loader2, Send, MessageSquare, UserCircle } from 'lucide-react'
+
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardFooter } from '@/components/ui/card'
-import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardFooter
+} from '@/components/ui/card'
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage
+} from '@/components/ui/form'
 import { Textarea } from "@/components/ui/textarea"
 import { Separator } from '@/components/ui/separator'
-import { Loader2, Send, MessageSquare, UserCircle } from 'lucide-react'
-import { useParams } from 'next/navigation'
-import { ReactNode, useState } from 'react'
-import { FormProvider, useForm } from 'react-hook-form'
-import * as z from 'zod'
-import { messageSchema } from '@/schemas/messageSchema'
-import { zodResolver } from '@hookform/resolvers/zod'
-import Link from 'next/link'
-import axios, { AxiosError } from 'axios'
 import { toast } from '@/components/ui/use-toast'
+
+import { messageSchema } from '@/schemas/messageSchema'
+
 import { ApiResponse } from '@/types/ApiResponse'
 
 const Page = () => {
@@ -63,13 +82,18 @@ const Page = () => {
 
     try {
       const result = await axios.post('/api/suggest-messages')
-      console.log(result.data.message)
+      // console.log(result.data.message)
 
       const unquotedResult = await result.data.message
       const output = unquotedResult
         .split("||")
         .map((item: string) => item.replace(/^"|"$/g, '')); setMessages(output)
-      console.log(output)
+      // console.log(output)
+
+      toast({
+        title: "Messages generated successfully",
+        variant: 'default'
+      })
 
     }
     catch (error) {
@@ -190,9 +214,10 @@ const Page = () => {
                   const text = typeof message === "string" ? message : ""
 
                   return (
-                    <div
+                    <button
                       key={id}
                       className="bg-purple-100 dark:bg-purple-900 p-4 rounded-lg shadow-sm"
+                      onClick={() => form.setValue("content", text)}
                     >
                       <p className="text-gray-800 dark:text-gray-200 text-base leading-relaxed">
                         <span
@@ -202,7 +227,7 @@ const Page = () => {
                         </span>
                         {text}
                       </p>
-                    </div>
+                    </button>
                   );
                 })
               }
