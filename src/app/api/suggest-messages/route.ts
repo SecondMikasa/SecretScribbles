@@ -44,7 +44,15 @@ export async function POST(request: Request) {
     }
     else {
       console.error("An unexpected error occurred: ", error)
-      throw error
+      return Response.json(
+        {
+          message: "An unexpected error occurred",
+          success: false
+        },
+        {
+          status: 500
+        }
+      )
     }
   }
 }

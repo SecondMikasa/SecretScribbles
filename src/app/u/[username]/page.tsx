@@ -6,21 +6,25 @@ import { Textarea } from "@/components/ui/textarea"
 import { Separator } from '@/components/ui/separator'
 import { Loader2, Send, MessageSquare, UserCircle } from 'lucide-react'
 import { useParams } from 'next/navigation'
-import { useState } from 'react'
+import { ReactNode, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import * as z from 'zod'
 import { messageSchema } from '@/schemas/messageSchema'
 import { zodResolver } from '@hookform/resolvers/zod'
 import Link from 'next/link'
-import axios, {AxiosError} from 'axios'
+import axios, { AxiosError } from 'axios'
 import { toast } from '@/components/ui/use-toast'
 import { ApiResponse } from '@/types/ApiResponse'
 
 const Page = () => {
-  const params = useParams<{username: string}>()
+  const params = useParams<{ username: string }>()
   const username = params.username
+
   const [isLoading, setIsLoading] = useState(false)
+  const [isGenerating, setIsGenerating] = useState(false)
   const [isMessageSent, setIsMessageSent] = useState(false)
+
+  const [messages, setMessages] = useState<z.infer<typeof messageSchema>[]>()
 
   const form = useForm<z.infer<typeof messageSchema>>({
     resolver: zodResolver(messageSchema)
@@ -28,18 +32,18 @@ const Page = () => {
 
   const onSubmit = async (data: z.infer<typeof messageSchema>) => {
     setIsLoading(true)
-    
+
     try {
       const res = await axios.post<ApiResponse>('/api/send-message', {
         username: username,
         content: data.content
       })
-      
+
       toast({
         title: res.data.message,
         variant: 'default'
       })
-      
+
       form.reset()
       setIsMessageSent(true)
     } catch (error) {
@@ -51,6 +55,33 @@ const Page = () => {
       })
     } finally {
       setIsLoading(false)
+    }
+  }
+
+  const handleGenerate = async () => {
+    setIsGenerating(true)
+
+    try {
+      const result = await axios.post('/api/suggest-messages')
+      console.log(result.data.message)
+
+      const unquotedResult = await result.data.message
+      const output = unquotedResult
+        .split("||")
+        .map((item: string) => item.replace(/^"|"$/g, '')); setMessages(output)
+      console.log(output)
+
+    }
+    catch (error) {
+      const axiosError = error as AxiosError<ApiResponse>
+      toast({
+        title: "Oopsie! Scribble failed to generate",
+        description: axiosError.response?.data.message ?? "Some error occurred while trying to generate message",
+        variant: "destructive"
+      })
+    }
+    finally {
+      setIsGenerating(false)
     }
   }
 
@@ -67,7 +98,7 @@ const Page = () => {
               <p className="text-white/80 mt-2">Send an anonymous message</p>
             </div>
           </CardHeader>
-          
+
           <CardContent className="p-6 md:p-8">
             {isMessageSent ? (
               <div className="text-center py-8">
@@ -76,7 +107,7 @@ const Page = () => {
                 </div>
                 <h2 className="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-2">Message Sent!</h2>
                 <p className="text-gray-600 dark:text-gray-300 mb-6">Your anonymous message has been delivered successfully.</p>
-                <Button 
+                <Button
                   onClick={() => setIsMessageSent(false)}
                   className="bg-purple-600 hover:bg-purple-700"
                 >
@@ -109,8 +140,8 @@ const Page = () => {
                     )}
                   />
                   <div className="flex justify-center">
-                    <Button 
-                      type="submit" 
+                    <Button
+                      type="submit"
                       disabled={isLoading}
                       className="bg-purple-600 hover:bg-purple-700 text-white font-medium py-2 px-6 rounded-full transition-all"
                     >
@@ -131,9 +162,55 @@ const Page = () => {
               </FormProvider>
             )}
           </CardContent>
-          
+
+          <CardContent className="p-6">
+            <div className="flex justify-center mb-4">
+              <Button
+                type="button"
+                disabled={isGenerating}
+                onClick={handleGenerate}
+                className="bg-gradient-to-r from-purple-600 to-pink-500 hover:from-purple-700 hover:to-pink-600 text-white font-medium py-2 px-6 rounded-full transition-all flex items-center"
+              >
+                {isGenerating ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Generating...
+                  </>
+                ) : (
+                  <>
+                    <MessageSquare size={16} className="mr-2" />
+                    Generate Messages
+                  </>
+                )}
+              </Button>
+            </div>
+            <div className="space-y-4">
+              {
+                messages?.map((message, id) => {
+                  const text = typeof message === "string" ? message : ""
+
+                  return (
+                    <div
+                      key={id}
+                      className="bg-purple-100 dark:bg-purple-900 p-4 rounded-lg shadow-sm"
+                    >
+                      <p className="text-gray-800 dark:text-gray-200 text-base leading-relaxed">
+                        <span
+                          role="img"
+                        >
+                          ✨
+                        </span>
+                        {text}
+                      </p>
+                    </div>
+                  );
+                })
+              }
+            </div>
+          </CardContent>
+
           <Separator className="my-0" />
-          
+
           <CardFooter className="p-6 bg-gray-50 dark:bg-gray-800/50 flex flex-col">
             <div className="text-center space-y-4">
               <p className="text-gray-600 dark:text-gray-400">Want to receive anonymous messages too?</p>
